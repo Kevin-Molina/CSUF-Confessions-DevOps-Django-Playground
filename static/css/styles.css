@@ -1,3 +1,217 @@
 body {
-    background-color: #b7d8dc;
+    background-color: #4BBEE3;
+}
+
+h1 {
+    color: #ffffff;
+    font-family: 'Raleway',sans-serif;
+    font-size: 62px;
+    font-weight: 800;
+    line-height: 72px;
+    margin: 0 0 24px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+
+h2 {
+    color: #ffffff;
+    font-family: 'Raleway',sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 72px;
+    margin: 0 0 24px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+
+p { color: #f8f8f8;
+    font-family: 'Raleway',sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 32px;
+    margin: 0 0 24px;
+}
+
+.logo {
+    width: 40px;
+    height: 40px
+}
+
+.marginForm {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2%;
+    width: 50%;
+}
+
+.TLPad {
+    margin-left: 1%;
+    margin-top: 1%;
+}
+
+.centerMe {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2%;
+    width: 50%;
+    text-align: center;
+}
+.longTitle {
+    margin-top: 2%;
+    text-align: center;
+}
+
+.centerImage {
+    max-width: 70%;
+    height: auto;
+    width: auto;
+}
+
+.confessionContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px
+}
+
+.footerP {
+    margin-bottom: 0px;
+    margin-left: 5px;
+}
+
+
+
+.cCard {
+    width: 300px;
+    height: 275px;
+    margin: 20px;
+}
+
+.divCenter {
+    margin: 0 auto;
+    width: 50%;
+}
+
+.icon {
+    width: 50px;
+    height: 50px;
+    float: right;
+}
+
+.parent2 {
+
+
+}
+
+.name {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+}
+
+.cardText {
+    position:absolute;
+    vertical-align: middle;
+    margin-top: 10px;
+}
+
+.cardIcon {
+
+}
+.left {
+    float: left;
+    margin-left: 4%;
+    margin-top: 3%;
+    width: 8%;
+    height: 8%;
+
+}
+
+.right {
+    float: right;
+    margin-right: 4%;
+    margin-top: 3%;
+    width: 8%;
+    height: 8%;
+}
+
+.upvote {
+    position: absolute;
+    bottom: -18px;
+    right: -18px;
+    height: 40px;
+    width: 40px;
+}
+
+.downvote {
+    position: absolute;
+    bottom: -18px;
+    left: -18px;
+    height: 40px;
+    width: 40px;
+}
+
+.upvoteCount {
+    font-family: 'Passion One', cursive;
+    position: absolute;
+    top: -18px;
+    right: -18px;
+    font-size: 42px;
+    color: #000000;
+}
+
+.downvoteCount {
+    font-family: 'Passion One', cursive;
+    position: absolute;
+    top: -18px;
+    right: -18px;
+    font-size: 42px;
+    color: #ff0000;
+}
+
+.cardFrame {
+    width:330px;
+    height:320px;
+    border: transparent;
+}
+
+.delete {
+    position: absolute;
+    top: -24px;
+    left: -24px;
+    height: 45px;
+    width: 45px;
+}
+
+.loggedOutError {
+    font-family: 'Passion One', cursive;
+    position: absolute;
+    top: -30px;
+    font-size: 24px;
+    color: #ff0000;
+    width: 100%;
+    text-align: center;
+
+}
+
+.ulDiv {
+    margin-left: 25%;
+    margin-right: 25%;
+    text-align: center;
+    width: 50%;
+}
+.ulDiv > ul {
+    display: inline-block;
+}
+
+.ulDiv > ul > li {
+    text-align: start;
+}
+
+.rmpH3 {
+    text-align: start;
 }
