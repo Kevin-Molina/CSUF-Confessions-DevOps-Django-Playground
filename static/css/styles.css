@@ -2,6 +2,11 @@ body {
     background-color: #4BBEE3;
 }
 
+.navbar
+{
+    border-bottom:3px solid blue;
+}
+
 h1 {
     color: #ffffff;
     font-family: 'Raleway',sans-serif;
