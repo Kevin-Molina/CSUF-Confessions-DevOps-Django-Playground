@@ -6,7 +6,9 @@ class Confession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     title = models.CharField(max_length=30)
     body = models.CharField(max_length=120)
-    date_created = models.DateTimeField(db_index=True)
+
+    class Meta:
+        ordering = ["-id"]
 
 
 class Comment(models.Model):

@@ -1,0 +1,55 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+
+{% block title %}Confessions{% endblock %}
+
+{% block content %}
+    <div class='confessionContainer'>
+        {% for confession in confessions %}
+            <div class="{{ confession.css_class }}" style="max-width: 18rem;">
+                <form method='POST' action="">
+                    <input type="hidden" name="vote" value="downvote">
+                    <input type="hidden" name="id" value="">
+                    <input type="image" name="submit" src="{% static "images/downvote.png" %}" class="downvote"/>
+                </form>
+                <form method='POST' action="">
+                    <input type="hidden" name="vote" value="upvote">
+                    <input type="hidden" name="id" value="">
+                    <input type="image" name="submit" src="{% static "images/upvote.png" %}" class="upvote"/>
+                </form>
+                <p class="{% if confession.vote_count < 0 %}downvoteCount{% else %}upvoteCount{% endif %}">{{ confession.vote_count }}</p>
+                <div class="card-body">
+                    <h4 class="card-title">{{ confession.title }}</h4>
+                    <p class="card-text">{{ confession.body }}</p>
+                </div>
+                <div class="card-footer bg-transparent border-dark parent2">
+                    <span class="cardText">
+                        <h5>{{ confession.alias }}</h5>
+                    </span>
+                    <span class="cardIcon">
+                        <img src="{% static 'images/icons/'|add:confession.alias|add:'.png' %}" class="icon" alt="Animal">
+                     </span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+
+{#    <div class="pagination">#}
+{#    <span class="step-links">#}
+{#        {% if page_obj.has_previous %}#}
+{#            <a href="?page=1">&laquo; first</a>#}
+{#            <a href="?page={{ page_obj.previous_page_number }}">previous</a>#}
+{#        {% endif %}#}
+{##}
+{#        <span class="current">#}
+{#            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.#}
+{#        </span>#}
+{##}
+{#        {% if page_obj.has_next %}#}
+{#            <a href="?page={{ page_obj.next_page_number }}">next</a>#}
+{#            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>#}
+{#        {% endif %}#}
+{#    </span>#}
+{#    </div>#}
