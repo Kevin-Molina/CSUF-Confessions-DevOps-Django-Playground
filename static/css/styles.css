@@ -39,6 +39,17 @@ p { color: #f8f8f8;
     margin: 0 0 24px;
 }
 
+.confession-form-text {
+    color: #000000;
+    font-family: 'Raleway',sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 72px;
+    margin: 0 0 24px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
 .logo {
     width: 40px;
     height: 40px
@@ -107,10 +118,6 @@ p { color: #f8f8f8;
     float: right;
 }
 
-.parent2 {
-
-
-}
 
 .name {
     display: inline-block;
@@ -219,4 +226,8 @@ p { color: #f8f8f8;
 
 .rmpH3 {
     text-align: start;
+}
+
+.asteriskField {
+    display: none;
 }

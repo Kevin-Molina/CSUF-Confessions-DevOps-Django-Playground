@@ -1,12 +1,19 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
+from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic.list import ListView
-from django.shortcuts import render
+from django.views.generic.edit import CreateView, DeleteView
 from django.db.models import Sum
 from django.db.models.functions import Coalesce
 
 import random
 import copy
 from itertools import cycle
+
+from confessions.forms import ConfessionForm, VoteForm
 from .models import Confession, Comment, Vote
 
 
@@ -68,10 +75,11 @@ class ConfessionListView(ListView):
         """Returns repeated iterable to cycle through styles"""
         styles = [
             "card text-white bg-warning mb-3 cCard",
-            "card text-white bg-danger mb-3 cCard",
             "card text-white bg-primary mb-3 cCard",
-            "card text-white bg-secondary mb-3 cCard",
-            "card text-white bg-success mb-3 cCard",
+            "card text-white bg-info mb-3 cCard",
+            "card bg-light mb-3 cCard",
+            "card text-white bg-warning mb-3 cCard",
+            "card text-white bg-primary mb-3 cCard",
             "card text-white bg-info mb-3 cCard",
             "card bg-light mb-3 cCard",
         ]
@@ -79,24 +87,49 @@ class ConfessionListView(ListView):
         return cycle(styles)
 
 
-class ConfessionView(View):
-    confession_styles = [
-        "card text-white bg-warning mb-3 cCard",
-        "card text-white bg-danger mb-3 cCard",
-        "card text-white bg-primary mb-3 cCard",
-        "card text-white bg-secondary mb-3 cCard",
-        "card text-white bg-success mb-3 cCard",
-        "card text-white bg-info mb-3 cCard",
-        "card bg-light mb-3 cCard",
-    ]
+class ConfessionCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
+    model = Confession
+    form_class = ConfessionForm
+    success_url = reverse_lazy("confessions")
+    success_message = "Confession submitted ;)"
 
-    def get(self, request):
-        offset = request.GET.get("page")
-        if request.user.is_authenticated:
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        response = super(ConfessionCreateView, self).form_valid(form)
+        Vote.objects.create(
+            confession=self.object, user=self.request.user, vote=Vote.UPVOTE
+        )
+        return response
+
+    def get_success_message(self, cleaned_data):
+        return self.success_message
+
+
+class VoteSubmitView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
+    model = Vote
+    form_class = VoteForm
+    success_url = reverse_lazy("confessions")
+    success_message = "Vote recorded"
+    template_name = "confessions/confessions.html"
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.confession_id = self.kwargs["id"]
+        try:
+            vote = Vote.objects.get(
+                user=self.request.user, confession_id=self.kwargs["id"]
+            )
+            if vote.vote == form.instance.vote:
+                form.instance.vote = 0
+            vote.delete()  # Can just make this an update eventually
+        except Vote.DoesNotExist:
             pass
+        return super(VoteSubmitView, self).form_valid(form)
 
-    def post(self, request):
+    def form_invalid(self, form):
         pass
 
-    def delete(self, request):
-        pass
+
+# class ConfessionDeleteView(DeleteView):
+#     model = Confession
+#     success_url = reverse_lazy()

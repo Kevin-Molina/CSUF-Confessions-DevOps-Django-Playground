@@ -1,11 +1,15 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
 
 
 class Confession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     title = models.CharField(max_length=30)
     body = models.CharField(max_length=120)
+
+    def get_absolute_url(self):
+        return reverse("view_confession", args=[self.id])
 
     class Meta:
         ordering = ["-id"]

@@ -4,17 +4,24 @@
 {% block title %}Confessions{% endblock %}
 
 {% block content %}
+    {% if messages %}
+        <div class="alert alert-warning">
+            {% for message in messages %}
+                {{ message }}<br/>
+            {% endfor %}
+        </div>
+    {% endif %}
     <div class='confessionContainer'>
         {% for confession in confessions %}
             <div class="{{ confession.css_class }}" style="max-width: 18rem;">
-                <form method='POST' action="">
-                    <input type="hidden" name="vote" value="downvote">
-                    <input type="hidden" name="id" value="">
+                <form method='POST' action="{% url 'submit_vote' id=confession.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="vote" value="-1">
                     <input type="image" name="submit" src="{% static "images/downvote.png" %}" class="downvote"/>
                 </form>
-                <form method='POST' action="">
-                    <input type="hidden" name="vote" value="upvote">
-                    <input type="hidden" name="id" value="">
+                <form method='POST' action="{% url 'submit_vote' id=confession.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="vote" value="1">
                     <input type="image" name="submit" src="{% static "images/upvote.png" %}" class="upvote"/>
                 </form>
                 <p class="{% if confession.vote_count < 0 %}downvoteCount{% else %}upvoteCount{% endif %}">{{ confession.vote_count }}</p>
