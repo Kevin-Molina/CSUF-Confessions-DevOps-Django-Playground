@@ -129,11 +129,9 @@ p { color: #f8f8f8;
     position:absolute;
     vertical-align: middle;
     margin-top: 10px;
+    mix-blend-mode: difference;
 }
 
-.cardIcon {
-
-}
 .left {
     float: left;
     margin-left: 4%;
@@ -153,18 +151,35 @@ p { color: #f8f8f8;
 
 .upvote {
     position: absolute;
-    bottom: -18px;
-    right: -18px;
+    bottom: 40px;
+    right: -20px;
     height: 40px;
     width: 40px;
 }
 
 .downvote {
     position: absolute;
-    bottom: -18px;
-    left: -18px;
+    bottom: -10px;
+    right: -20px;
     height: 40px;
     width: 40px;
+}
+
+.chatIcon {
+    position: absolute;
+    bottom: 78px;
+    right: 8px;
+    height: 50px;
+    width: 50px;
+}
+
+.commentCount {
+    font-family: 'Passion One', cursive;
+    position: absolute;
+    bottom: 85px;
+    right: 24px;
+    font-size: 30px;
+    color: black;
 }
 
 .upvoteCount {

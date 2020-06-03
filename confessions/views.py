@@ -1,16 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
-from django.urls import reverse_lazy, reverse
-from django.views import View
+from django.urls import reverse_lazy
 from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView, DeleteView
-from django.db.models import Sum
+from django.views.generic.edit import CreateView
+from django.views.generic.detail import DetailView
+from django.db.models import Sum, Count
 from django.db.models.functions import Coalesce
 
 import random
-import copy
 from itertools import cycle
 
 from confessions.forms import ConfessionForm, VoteForm
@@ -23,19 +20,10 @@ class ConfessionListView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        owner_id = self.request.GET.get("owner_id")
-        # TODO - Edge cases
-        if (
-            owner_id
-            and self.request.user.is_authenticated
-            and owner_id == self.request.user.id
-        ):
-            confessions = Confession.objects.filter(user=self.request.user)
-        else:
-            confessions = Confession.objects.all()
-
         # Default vote count to 0
-        confessions = confessions.annotate(vote_count=Coalesce(Sum("vote__vote"), 0))
+        confessions = Confession.objects.annotate(
+            vote_count=Coalesce(Sum("vote__vote"), 0), comment_count=(Count("comment"))
+        ).order_by("-id")
 
         styles_cycle = self.__get_styles_cycle()
 
@@ -76,12 +64,6 @@ class ConfessionListView(ListView):
         styles = [
             "card text-white bg-warning mb-3 cCard",
             "card text-white bg-primary mb-3 cCard",
-            "card text-white bg-info mb-3 cCard",
-            "card bg-light mb-3 cCard",
-            "card text-white bg-warning mb-3 cCard",
-            "card text-white bg-primary mb-3 cCard",
-            "card text-white bg-info mb-3 cCard",
-            "card bg-light mb-3 cCard",
         ]
         random.shuffle(styles)
         return cycle(styles)
