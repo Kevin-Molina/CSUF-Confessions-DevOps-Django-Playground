@@ -11,7 +11,7 @@ import random
 from itertools import cycle
 
 from confessions.forms import ConfessionForm, VoteForm
-from .models import Confession, Comment, Vote
+from .models import Confession, Comment, Vote, Snitch
 
 
 class ConfessionListView(ListView):
@@ -29,7 +29,7 @@ class ConfessionListView(ListView):
 
         for confession in confessions:
             confession.css_class = next(styles_cycle)
-            confession.alias = self.__get_alias_from_user_id(confession.user.id)
+            confession.alias = confession.snitch.get_alias()
         return confessions
 
     @staticmethod
@@ -110,6 +110,14 @@ class VoteSubmitView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 
     def form_invalid(self, form):
         pass
+
+
+class CommentListView(ListView):
+    model = Confession
+    template_name = "confessions/comments.html"
+
+    def get_queryset(self):
+        comments = Comment.objects.annotate()
 
 
 # class ConfessionDeleteView(DeleteView):
