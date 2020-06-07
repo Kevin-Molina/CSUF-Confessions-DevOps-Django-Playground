@@ -21,16 +21,36 @@ class ConfessionListView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        # Default vote count to 0
-        confessions = Confession.objects.annotate(
-            vote_count=Coalesce(Sum("vote__vote"), 0), comment_count=(Count("comment"))
-        ).order_by("-id")
-
         styles_cycle = get_confession_styles_cycle()
+
+        if (
+            self.request.user.is_authenticated
+            and self.request.GET.get("owner") == "self"
+        ):
+            # Default vote count is 0
+            # TODO - Fix broken query
+            confessions = (
+                Confession.objects.filter(user=self.request.user)
+                .annotate(
+                    vote_count=Coalesce(Sum("vote__vote"), 0),
+                    comment_count=(Count("comment")),
+                )
+                .order_by("-id")
+            )
+
+            # TODO - Check if results in extra DB round trip
+            for confession in confessions:
+                confession.is_self_owned = True
+        else:
+            confessions = Confession.objects.annotate(
+                vote_count=Coalesce(Sum("vote__vote"), 0),
+                comment_count=(Count("comment")),
+            ).order_by("-id")
 
         for confession in confessions:
             confession.css_class = next(styles_cycle)
             confession.alias = get_alias_from_user_id(confession.user_id)
+
         return confessions
 
 
