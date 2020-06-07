@@ -1,0 +1,11 @@
+{% load crispy_forms_tags %}
+
+<form action="{% url 'submit_comment' pk=confession.pk %}" method="POST">
+    {% csrf_token %}
+    <div class="form-row">
+        <div class="form-group col-lg-12 ">
+            {{ form.comment|as_crispy_field }}
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Post</button>
+</form>

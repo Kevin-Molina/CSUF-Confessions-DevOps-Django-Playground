@@ -1,5 +1,6 @@
 {% extends 'layout/base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block title %}Confessions{% endblock %}
 
@@ -17,7 +18,7 @@
                 <a href="{% url 'view_confession' pk=confession.pk %}">
                     <div class="chatIcon"></div>
                     <img src="{% static "images/chat.png" %}" class="chatIcon" alt="icon">
-                    <span class="commentCount">{{ 0 }}</span>
+                    <span class="commentCount">{{ confession.comment_count }}</span>
                 </a>
                 <form method='POST' action="{% url 'submit_vote' pk=confession.pk %}">
                     {% csrf_token %}
@@ -29,7 +30,7 @@
                     <input type="hidden" name="vote" value="1">
                     <input type="image" name="submit" src="{% static "images/upvote.png" %}" class="upvote"/>
                 </form>
-                <p class="downvoteCount">0</p>
+                <p class="{% if confession.vote_count < 0 %}downvoteCount">{% else %}upvoteCount">+{% endif %}{{ confession.vote_count }}</p>
                 <div class="card-body">
                     <h4 class="card-title">{{ confession.title }}</h4>
                     <p class="card-text">{{ confession.body }}</p>
@@ -45,18 +46,18 @@
             </div>
         {% endfor %}
     </div>
-        <div class="pagination">
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}">
-                <img src="{% static 'images/backward.png' %}" alt="Previous Page" class="left">
-            </a>
-        {% endif %}
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">
-                <img src="{% static 'images/forward.png' %}" alt="Next Page" class="right">
-            </a>
-        {% endif %}
-    </span>
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">
+                    <img src="{% static 'images/backward.png' %}" alt="Previous Page" class="left">
+                </a>
+            {% endif %}
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">
+                    <img src="{% static 'images/forward.png' %}" alt="Next Page" class="right">
+                </a>
+            {% endif %}
+        </span>
     </div>
 {% endblock %}

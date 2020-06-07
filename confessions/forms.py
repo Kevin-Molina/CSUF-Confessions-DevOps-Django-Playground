@@ -21,6 +21,12 @@ class ConfessionForm(ModelForm):
 
 
 class CommentForm(ModelForm):
+    comment = forms.CharField(
+        widget=forms.Textarea(
+            attrs={"rows": 3, "cols": 40, "placeholder": "Daaaaaaaang..."}
+        )
+    )
+
     class Meta:
         model = Comment
         fields = ["comment"]

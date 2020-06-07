@@ -1,0 +1,91 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% load tz %}
+{% load crispy_forms_tags %}
+
+{% block title %}Comments{% endblock %}
+
+{% block content %}
+    {% if messages %}
+        <div class="alert alert-warning">
+            {% for message in messages %}
+                {{ message }}<br/>
+            {% endfor %}
+        </div>
+    {% endif %}
+<div class="mainContainer">
+    <div class="confessionFlexContainer">
+        <div class="singleConfessionContainer">
+            <div class="{{ confession.css_class }}" style="max-width: 18rem;">
+                <div class="card-body">
+                    <h4 class="card-title">{{ confession.title }}</h4>
+                    <p class="card-text">{{ confession.body }}</p>
+                </div>
+                <div class="card-footer bg-transparent border-dark parent2">
+                    <span class="cardText">
+                        <h5>{{ confession.alias }}</h5>
+                    </span>
+                    <span class="cardIcon">
+                        <img src="{% static 'images/icons/'|add:confession.alias|add:'.png' %}" class="icon" alt="Animal">
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="commentFlexContainer">
+        <div class="horizontalFlexContainer">
+            <div class="verticalFlexContainer">
+                <div class="commentHeading">
+                    <h1>{% if not comments %}No comments...you're the first!{% else %}Don't forget to comment! :){% endif %}</h1>
+                <div class="submitCommentContainer">
+                    <div class="commentDiv">
+                    {% include "confessions/comment_form.html" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="horizontalFlexContainer">
+            <div class="commentContainer">
+                <div class="card-group">
+                    {% for comment in comments %}
+                        <div class="horizontalFlexContainer commentCard">
+                            <div class="card {{ comment.css_class }}">
+                                <div class="card-body">
+                                    {{ comment.comment }}
+                                </div>
+                                <div class="card-footer">
+                                    <span class="cardText">
+                                        <h5>By {{ confession.alias }}</h5>
+                                    </span>
+                                    <span class="cardIcon">
+                                        <img src="{% static 'images/icons/'|add:confession.alias|add:'.png' %}" class="icon" alt="Animal">
+                                    </span>
+{#                                    <span>From {{ comment.alias }} <strong> | </strong><i>Created <span id="{{ comment.id }}"></span></i></span>#}
+                                    <script type="text/javascript">
+                                        var m = new moment("{{ comment.created_at.isoformat }}");
+                                        document.getElementById("{{ comment.id }}").innerHTML = m.format("LLL")
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="pagination">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}">
+                            <img src="{% static 'images/backward.png' %}" alt="Previous Page" class="left">
+                        </a>
+                    {% endif %}
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">
+                            <img src="{% static 'images/forward.png' %}" alt="Next Page" class="right">
+                        </a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,5 +1,10 @@
+html {
+    height: 100%;
+}
+
 body {
     background-color: #4BBEE3;
+    height: 100%;
 }
 
 .navbar
@@ -85,21 +90,74 @@ p { color: #f8f8f8;
     width: auto;
 }
 
+.mainContainer {
+    height: 100%;
+    display: flex;
+}
+
+.singleConfessionContainer {
+    margin-top: 15%;
+    margin-left: 20%;
+    margin-right: 20%;
+}
+
+.commentCard {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    min-width: 70%;
+}
+
+.commentHeading {
+    max-width: 70%;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 5%;
+}
+
+.confessionFlexContainer {
+    flex: 1 1 0;
+}
+
+.commentFlexContainer {
+    flex: 2 1 0;
+}
+
+.commentDiv {
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    width: 70%;
+}
+
+.verticalFlexContainer {
+    flex: 1 1 0;
+}
+
+.horizontalFlexContainer {
+    flex: 1 1 0;
+    flex-direction: row;
+}
+
+
+.submitCommentContainer {
+    flex: 1 1 0;
+    flex-direction: row;
+}
+
 .confessionContainer {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
     padding-left: 20px;
     padding-right: 20px;
-    padding-top: 20px
+    padding-top: 20px;
 }
 
 .footerP {
     margin-bottom: 0px;
     margin-left: 5px;
 }
-
-
 
 .cCard {
     width: 300px;

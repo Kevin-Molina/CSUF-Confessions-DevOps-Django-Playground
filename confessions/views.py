@@ -1,17 +1,18 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
-from django.views.generic.detail import DetailView
 from django.db.models import Sum, Count
 from django.db.models.functions import Coalesce
 
-import random
-from itertools import cycle
-
-from confessions.forms import ConfessionForm, VoteForm
-from .models import Confession, Comment, Vote, Snitch
+from confessions.forms import ConfessionForm, VoteForm, CommentForm
+from .models import Confession, Comment, Vote
+from .utils import (
+    get_confession_styles_cycle,
+    get_alias_from_user_id,
+    get_comment_styles_cycle,
+)
 
 
 class ConfessionListView(ListView):
@@ -25,48 +26,12 @@ class ConfessionListView(ListView):
             vote_count=Coalesce(Sum("vote__vote"), 0), comment_count=(Count("comment"))
         ).order_by("-id")
 
-        styles_cycle = self.__get_styles_cycle()
+        styles_cycle = get_confession_styles_cycle()
 
         for confession in confessions:
             confession.css_class = next(styles_cycle)
-            confession.alias = confession.snitch.get_alias()
+            confession.alias = get_alias_from_user_id(confession.user_id)
         return confessions
-
-    @staticmethod
-    def __get_alias_from_user_id(user_id):
-        aliases = [
-            "SaucySheep",
-            "ColonialClownFish",
-            "CombatantCorgi",
-            "DisappointedDog",
-            "KookyKangaroo",
-            "TacticalTurtle",
-            "PeppyPig",
-            "DistressedDuck",
-            "WeatherproofWhale",
-            "FascistFish",
-            "BarbarianBull",
-            "SeasickStork",
-            "CalculatedCat",
-            "CharmingChicken",
-            "CaptivatingCaterpillar",
-            "OblongOctopus",
-            "SacrilegiousShark",
-            "PuzzledPuffin",
-            "PragmaticPrawn",
-            "BashfulBee",
-        ]
-        return aliases[user_id % len(aliases)]
-
-    @staticmethod
-    def __get_styles_cycle():
-        """Returns repeated iterable to cycle through styles"""
-        styles = [
-            "card text-white bg-warning mb-3 cCard",
-            "card text-white bg-primary mb-3 cCard",
-        ]
-        random.shuffle(styles)
-        return cycle(styles)
 
 
 class ConfessionCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
@@ -96,10 +61,10 @@ class VoteSubmitView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        form.instance.confession_id = self.kwargs["id"]
+        form.instance.confession_id = self.kwargs["pk"]
         try:
             vote = Vote.objects.get(
-                user=self.request.user, confession_id=self.kwargs["id"]
+                user=self.request.user, confession_id=self.kwargs["pk"]
             )
             if vote.vote == form.instance.vote:
                 form.instance.vote = 0
@@ -113,11 +78,44 @@ class VoteSubmitView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
 
 
 class CommentListView(ListView):
-    model = Confession
     template_name = "confessions/comments.html"
+    context_object_name = "comments"
+    paginate_by = 4
 
     def get_queryset(self):
-        comments = Comment.objects.annotate()
+        return Comment.objects.filter(confession=self.kwargs["pk"]).order_by(
+            "-created_at"
+        )
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        styles_cycle = get_comment_styles_cycle()
+
+        for comment in context["comments"]:
+            comment.css_class = next(styles_cycle)
+            comment.alias = get_alias_from_user_id(comment.user_id)
+
+        confession = Confession.objects.get(id=self.kwargs["pk"])
+        confession.alias = get_alias_from_user_id(confession.user_id)
+        confession.css_class = next(get_confession_styles_cycle())
+        context["confession"] = confession
+        context["form"] = CommentForm
+        return context
+
+
+class CommentSubmitView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    success_message = "Comment Submitted"
+
+    def get_success_url(self):
+        return reverse("view_confession", kwargs={"pk": self.kwargs["pk"]})
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.confession_id = self.kwargs["pk"]
+        return super(CommentSubmitView, self).form_valid(form)
 
 
 # class ConfessionDeleteView(DeleteView):
