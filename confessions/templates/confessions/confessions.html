@@ -15,6 +15,12 @@
     <div class='confessionContainer'>
         {% for confession in confessions %}
             <div class="{{ confession.css_class }}" style="max-width: 18rem;">
+                {% if confession.is_self_owned is not None %}
+                    <form method='POST' action="{% url 'delete_confession' pk=confession.pk %}">
+                        {% csrf_token %}
+                        <input type="image" name="submit" src="{% static "images/delete.png" %}" class="delete"/>
+                    </form>
+                {% endif %}
                 <a href="{% url 'view_confession' pk=confession.pk %}">
                     <div class="chatIcon"></div>
                     <img src="{% static "images/chat.png" %}" class="chatIcon" alt="icon">

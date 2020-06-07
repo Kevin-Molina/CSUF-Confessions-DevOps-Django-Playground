@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy, reverse
 from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, DeleteView
 from django.db.models import Sum, Count
 from django.db.models.functions import Coalesce
 
@@ -46,6 +46,12 @@ class ConfessionListView(ListView):
                 vote_count=Coalesce(Sum("vote__vote"), 0),
                 comment_count=(Count("comment")),
             ).order_by("-id")
+            for confession in confessions:
+                if (
+                    self.request.user.is_authenticated
+                    and confession.user == self.request.user
+                ):
+                    confession.is_self_owned = True
 
         for confession in confessions:
             confession.css_class = next(styles_cycle)
@@ -138,6 +144,6 @@ class CommentSubmitView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         return super(CommentSubmitView, self).form_valid(form)
 
 
-# class ConfessionDeleteView(DeleteView):
-#     model = Confession
-#     success_url = reverse_lazy()
+class ConfessionDeleteView(LoginRequiredMixin, DeleteView):
+    model = Confession
+    success_url = reverse_lazy("confessions")
