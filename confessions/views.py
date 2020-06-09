@@ -3,7 +3,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy, reverse
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, DeleteView
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, OuterRef, Subquery, IntegerField
 from django.db.models.functions import Coalesce
 
 from confessions.forms import ConfessionForm, VoteForm, CommentForm
@@ -23,39 +23,38 @@ class ConfessionListView(ListView):
     def get_queryset(self):
         styles_cycle = get_confession_styles_cycle()
 
-        if (
-            self.request.user.is_authenticated
-            and self.request.GET.get("owner") == "self"
-        ):
-            # Default vote count is 0
-            # TODO - Fix broken query
-            confessions = (
-                Confession.objects.filter(user=self.request.user)
-                .annotate(
-                    vote_count=Coalesce(Sum("vote__vote"), 0),
-                    comment_count=(Count("comment")),
-                )
-                .order_by("-id")
-            )
+        comment_count = Confession.objects.annotate(
+            comment_count=Count("comment")
+        ).filter(pk=OuterRef("pk"))
+        vote_count = Confession.objects.annotate(vote_count=Sum("vote__vote")).filter(
+            pk=OuterRef("pk")
+        )
 
-            # TODO - Check if results in extra DB round trip
-            for confession in confessions:
-                confession.is_self_owned = True
-        else:
-            confessions = Confession.objects.annotate(
-                vote_count=Coalesce(Sum("vote__vote"), 0),
-                comment_count=(Count("comment")),
-            ).order_by("-id")
-            for confession in confessions:
-                if (
-                    self.request.user.is_authenticated
-                    and confession.user == self.request.user
-                ):
-                    confession.is_self_owned = True
+        confessions = Confession.objects.annotate(
+            comment_count=Subquery(
+                comment_count.values("comment_count"), output_field=IntegerField()
+            ),
+            vote_count=Subquery(
+                vote_count.values("vote_count"), output_field=IntegerField()
+            ),
+        )
+
+        # Re-use view to display only "own" confessions
+        if (
+            self.request.GET.get("owner") == "self"
+            and self.request.user.is_authenticated
+        ):
+            confessions = confessions.filter(user=self.request.user)
 
         for confession in confessions:
             confession.css_class = next(styles_cycle)
             confession.alias = get_alias_from_user_id(confession.user_id)
+
+            if (
+                self.request.user.is_authenticated
+                and confession.user == self.request.user
+            ):
+                confession.is_self_owned = True
 
         return confessions
 

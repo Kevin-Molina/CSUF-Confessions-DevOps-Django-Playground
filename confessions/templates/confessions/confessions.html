@@ -22,9 +22,11 @@
                     </form>
                 {% endif %}
                 <a href="{% url 'view_confession' pk=confession.pk %}">
-                    <div class="chatIcon"></div>
+                    <div class="chatIcon">
+                            <span class="commentCount">{{ confession.comment_count }}</span>
+                    </div>
                     <img src="{% static "images/chat.png" %}" class="chatIcon" alt="icon">
-                    <span class="commentCount">{{ confession.comment_count }}</span>
+{#                    <span class="commentCount">{{ confession.comment_count }}</span>#}
                 </a>
                 <form method='POST' action="{% url 'submit_vote' pk=confession.pk %}">
                     {% csrf_token %}

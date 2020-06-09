@@ -225,13 +225,12 @@ p { color: #f8f8f8;
     right: 8px;
     height: 50px;
     width: 50px;
+    display: flex;
+    justify-content: center;
 }
 
 .commentCount {
     font-family: 'Passion One', cursive;
-    position: absolute;
-    bottom: 85px;
-    right: 24px;
     font-size: 30px;
     color: black;
 }
