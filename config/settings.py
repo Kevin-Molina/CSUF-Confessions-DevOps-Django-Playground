@@ -20,12 +20,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "jk+g)cxbusf3$9(ap5&hp_ead0g6rn%u5v$0w=60&g8*d9a9o#"
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ["DEBUG_MODE"] == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"]
 
 
 # Application definition
@@ -115,8 +115,16 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "collected_static_files/")
+STATIC_URL = "/static/" if DEBUG else STATIC_ROOT
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 LOGIN_REDIRECT_URL = "index"
 LOGOUT_REDIRECT_URL = "index"
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# Setting up Django behind HTTP, but this should just set the cookie to "secure"
+# preventing the browser from sending it over HTTP (client->alb is HTTPS)
+# not Django itself respond over HTTPS
+CSRF_COOKIE_SECURE = True
