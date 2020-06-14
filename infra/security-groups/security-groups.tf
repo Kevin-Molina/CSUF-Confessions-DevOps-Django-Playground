@@ -9,7 +9,7 @@ data "terraform_remote_state" "vpc" {
 terraform {
   backend "s3" {
     bucket = "confessions-terraform-state"
-    key    = "db-sg.tfstate"
+    key    = "security-groups.tfstate"
   }
 }
 
