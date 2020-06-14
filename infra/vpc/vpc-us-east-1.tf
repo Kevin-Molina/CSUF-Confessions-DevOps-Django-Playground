@@ -5,11 +5,6 @@ terraform {
   }
 }
 
-provider "aws" {
-    profile = "default"
-    version = "~> 2.66"
-}
-
 resource "aws_vpc" "vpc_us_east_1" {
     cidr_block       = "10.0.0.0/16"
 }
