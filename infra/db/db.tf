@@ -14,6 +14,8 @@ data "terraform_remote_state" "security_group" {
   }
 }
 
+variable "DB_PASSWORD" {}
+
 resource "aws_db_subnet_group" "db_subnet_group" {
   name       = "db-subnet-group"
   subnet_ids = [data.terraform_remote_state.subnet_group.outputs.private_subnet_us_east_1a, 
@@ -29,7 +31,7 @@ resource "aws_db_subnet_group" "db_subnet_group" {
 resource "aws_db_instance" "db_instance" {
   allocated_storage       = 20
   storage_type            = "gp2"
-  engine                  = "postgresql"
+  engine                  = "postgres"
   engine_version          = "11.7"
   instance_class          = "db.t3.micro"
   db_subnet_group_name    = aws_db_subnet_group.db_subnet_group.name
@@ -38,5 +40,6 @@ resource "aws_db_instance" "db_instance" {
   identifier              = "confession-db"
   multi_az                = false
   username                = "master"
+  password                = var.DB_PASSWORD
   backup_retention_period = 7
 }
