@@ -31,7 +31,7 @@ resource "aws_db_instance" "db_instance" {
   storage_type            = "gp2"
   engine                  = "postgresql"
   engine_version          = "11.7"
-  instance_class          = "db.t2.micro"
+  instance_class          = "db.t3.micro"
   db_subnet_group_name    = aws_db_subnet_group.db_subnet_group.name
   vpc_security_group_ids  = [data.terraform_remote_state.security_group.outputs.db_sg_id]
   name                    = "confessions"
