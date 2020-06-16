@@ -130,8 +130,10 @@ LOGIN_REDIRECT_URL = "index"
 LOGOUT_REDIRECT_URL = "index"
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_REFERRER_POLICY = "origin"
 
 # Setting up Django behind HTTP, but this should just set the cookie to "secure"
 # preventing the browser from sending it over HTTP (client->alb is HTTPS)
 # not Django itself respond over HTTPS
 CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
