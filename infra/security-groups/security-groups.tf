@@ -63,7 +63,6 @@ resource "aws_security_group_rule" "lb_ingress" {
   source_security_group_id  = aws_security_group.lb_sg.id
 }
 
-
 resource "aws_security_group_rule" "app_egress" {
   type                      = "egress"
   description               = "Output to DB on 5432"
@@ -82,4 +81,35 @@ resource "aws_security_group_rule" "lb_egress" {
   protocol                  = "tcp"
   security_group_id         = aws_security_group.lb_sg.id
   source_security_group_id  = aws_security_group.app_sg.id
+}
+
+resource "aws_security_group_rule" "ssh_access" {
+  type                      = "ingress"
+  description               = "Allow SSH access"
+  from_port                 = 22
+  to_port                   = 22
+  protocol                  = "tcp"
+  cidr_blocks               = ["0.0.0.0/0"]
+  security_group_id         = aws_security_group.app_sg.id
+}
+
+
+resource "aws_security_group_rule" "outbound_http_access" {
+  type                      = "egress"
+  description               = "Allow port http outbound"
+  from_port                 = 80
+  to_port                   = 80
+  protocol                  = "tcp"
+  cidr_blocks               = ["0.0.0.0/0"]
+  security_group_id         = aws_security_group.app_sg.id
+}
+
+resource "aws_security_group_rule" "outbound_https_access" {
+  type                      = "egress"
+  description               = "Allow port https outbound"
+  from_port                 = 443
+  to_port                   = 443
+  protocol                  = "tcp"
+  cidr_blocks               = ["0.0.0.0/0"]
+  security_group_id         = aws_security_group.app_sg.id
 }

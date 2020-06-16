@@ -5,12 +5,19 @@ terraform {
   }
 }
 
-
 data "terraform_remote_state" "security_groups" {
   backend = "s3"
   config = {
     bucket = "confessions-terraform-state"
     key = "security-groups.tfstate"
+  }
+}
+
+data "terraform_remote_state" "subnet_group" {
+  backend = "s3"
+  config = {
+    bucket = "confessions-terraform-state"
+    key = "vpc-us-east-1.tfstate"
   }
 }
 
@@ -21,8 +28,6 @@ data "terraform_remote_state" "iam_roles" {
     key = "iam-roles.tfstate"
   }
 }
-
-
 
 resource "aws_key_pair" "key_pair" {
   key_name   = "kevin-key"
@@ -41,21 +46,23 @@ resource "aws_launch_template" "launch_template" {
     name = data.terraform_remote_state.iam_roles.outputs.ecs_instance_profile
   }
 
-  image_id = "ami-test"
+  image_id = "ami-0ac80df6eff0e70b5" # Ubuntu 18.04 LTS us-east-1
   instance_type = "t3a.nano"
   instance_initiated_shutdown_behavior = "terminate"
 
-  key_name = aws_key_pair.key_pair.public_key
-  vpc_security_group_ids = [data.terraform_remote_state.security_groups.outputs.app_sg_id]
+  key_name = aws_key_pair.key_pair.id
 
 
   network_interfaces {
     associate_public_ip_address = true
+    security_groups = [data.terraform_remote_state.security_groups.outputs.app_sg_id]
   }
 
   placement {
     group_name = aws_placement_group.placement_group.name
   }
+
+  user_data = filebase64("${path.module}/user-data.sh")
 
 }
 
@@ -69,9 +76,9 @@ resource "aws_autoscaling_group" "autoscaling_group" {
   desired_capacity          = 2
   force_delete              = false
   placement_group           = aws_placement_group.placement_group.name
-  vpc_zone_identifier       = [data.terraform_remote_state.subnet_group.outputs.private_subnet_us_east_1a, 
-                               data.terraform_remote_state.subnet_group.outputs.private_subnet_us_east_1b, 
-                               data.terraform_remote_state.subnet_group.outputs.private_subnet_us_east_1c]
+  vpc_zone_identifier       = [data.terraform_remote_state.subnet_group.outputs.public_subnet_us_east_1a, 
+                               data.terraform_remote_state.subnet_group.outputs.public_subnet_us_east_1b, 
+                               data.terraform_remote_state.subnet_group.outputs.public_subnet_us_east_1c]
 
   launch_template {
       id      = aws_launch_template.launch_template.id
