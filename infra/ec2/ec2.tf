@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket = "confessions-terraform-state"
-    key    = "cluster.tfstate"
+    key    = "ec2.tfstate"
   }
 }
 
@@ -70,10 +70,10 @@ resource "aws_launch_template" "launch_template" {
 resource "aws_autoscaling_group" "autoscaling_group" {
   name                      = "ASG"
   max_size                  = 2
-  min_size                  = 2
+  min_size                  = 1
   health_check_grace_period = 300
   health_check_type         = "EC2"
-  desired_capacity          = 2
+  desired_capacity          = 1
   force_delete              = false
   placement_group           = aws_placement_group.placement_group.name
   vpc_zone_identifier       = [data.terraform_remote_state.subnet_group.outputs.public_subnet_us_east_1a, 

@@ -4,3 +4,7 @@ terraform {
     key    = "cluster.tfstate"
   }
 }
+
+resource "aws_ecs_cluster" "cluster" {
+  name = "CONFESSION_CLUSTER"
+}
