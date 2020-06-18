@@ -1,3 +1,10 @@
+terraform {
+  backend "s3" {
+    bucket = "confessions-terraform-state"
+    key    = "rds.tfstate"
+  }
+}
+
 data "terraform_remote_state" "subnet_group" {
   backend = "s3"
   config = {
