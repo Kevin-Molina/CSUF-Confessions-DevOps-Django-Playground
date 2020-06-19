@@ -25,9 +25,10 @@ data "terraform_remote_state" "target-group" {
 
 
 resource "aws_ecs_service" "csuf-confessions" {
-  name          = "csuf-confessions"
-  cluster       = data.terraform_remote_state.cluster.outputs.cluster
-  desired_count = 1
+  name                              = "csuf-confessions"
+  cluster                           = data.terraform_remote_state.cluster.outputs.cluster
+  desired_count                     = 1
+  health_check_grace_period_seconds = 15
 
   iam_role      = "arn:aws:iam::569741890825:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS"
 

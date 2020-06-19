@@ -44,7 +44,7 @@ resource "aws_security_group" "lb_sg" {
 }
 
 
-resource "aws_security_group_rule" "ssh_access" {
+resource "aws_security_group_rule" "app_rule_ssh_access" {
   type                      = "ingress"
   description               = "Allow SSH access"
   from_port                 = 22
@@ -55,7 +55,7 @@ resource "aws_security_group_rule" "ssh_access" {
 }
 
 
-resource "aws_security_group_rule" "db_ingress" {
+resource "aws_security_group_rule" "db_rule_ingress_from_app" {
   type                     = "ingress"
   description              = "Inbound from app on 5432"
   from_port                = 5432
@@ -65,7 +65,7 @@ resource "aws_security_group_rule" "db_ingress" {
   source_security_group_id = aws_security_group.app_sg.id
 }
 
-resource "aws_security_group_rule" "lb_to_app_ingress" {
+resource "aws_security_group_rule" "app_rule_http_ingress_from_alb" {
   type                      = "ingress"
   description               = "Inbound from LB on 80"
   from_port                 = 80
@@ -75,7 +75,7 @@ resource "aws_security_group_rule" "lb_to_app_ingress" {
   source_security_group_id  = aws_security_group.lb_sg.id
 }
 
-resource "aws_security_group_rule" "app_db_egress" {
+resource "aws_security_group_rule" "app_rule_egress_to_db" {
   type                      = "egress"
   description               = "Outbound to DB on 5432"
   from_port                 = 5432
@@ -86,7 +86,7 @@ resource "aws_security_group_rule" "app_db_egress" {
 }
 
 
-resource "aws_security_group_rule" "app_http_egress" {
+resource "aws_security_group_rule" "app_rule_http_egress" {
   type                      = "egress"
   description               = "Outbound to over HTTP"
   from_port                 = 80
@@ -96,7 +96,7 @@ resource "aws_security_group_rule" "app_http_egress" {
   security_group_id         = aws_security_group.app_sg.id
 }
 
-resource "aws_security_group_rule" "app_https_egress" {
+resource "aws_security_group_rule" "app_rule_https_egress" {
   type                      = "egress"
   description               = "Outbound over HTTPS"
   from_port                 = 443
@@ -106,7 +106,19 @@ resource "aws_security_group_rule" "app_https_egress" {
   security_group_id         = aws_security_group.app_sg.id
 }
 
-resource "aws_security_group_rule" "lb_http_ingress" {
+resource "aws_security_group_rule" "app_rule_dynamic_port_ingress_from_lb" {
+  type                      = "ingress"
+  description               = "Ingress from LB to App (dynamic ports)"
+  from_port                 = 32768
+  to_port                   = 65535
+  protocol                  = "tcp"
+  security_group_id         = aws_security_group.app_sg.id
+  source_security_group_id  = aws_security_group.lb_sg.id
+}
+
+
+
+resource "aws_security_group_rule" "lb_rule_http_ingress" {
   type                      = "ingress"
   description               = "Allow http access"
   from_port                 = 80
@@ -116,7 +128,7 @@ resource "aws_security_group_rule" "lb_http_ingress" {
   security_group_id         = aws_security_group.lb_sg.id
 }
 
-resource "aws_security_group_rule" "lb_https_ingress" {
+resource "aws_security_group_rule" "lb_rule_https_ingress" {
   type                      = "ingress"
   description               = "Allow https access"
   from_port                 = 443
@@ -127,11 +139,21 @@ resource "aws_security_group_rule" "lb_https_ingress" {
 }
 
 
-resource "aws_security_group_rule" "lb_egress" {
+resource "aws_security_group_rule" "lb_rule_http_egress_to_app" {
   type                      = "egress"
   description               = "Outbound to App on 80"
   from_port                 = 80
   to_port                   = 80
+  protocol                  = "tcp"
+  security_group_id         = aws_security_group.lb_sg.id
+  source_security_group_id  = aws_security_group.app_sg.id
+}
+
+resource "aws_security_group_rule" "lb_rule_dynamic_port_egress_to_app" {
+  type                      = "egress"
+  description               = "Egress from LB to App (dynamic ports)"
+  from_port                 = 32768
+  to_port                   = 65535
   protocol                  = "tcp"
   security_group_id         = aws_security_group.lb_sg.id
   source_security_group_id  = aws_security_group.app_sg.id
