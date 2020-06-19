@@ -84,6 +84,7 @@ class VoteSubmitView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     success_message = "Vote recorded"
     template_name = "confessions/confessions.html"
     login_url = "login"
+    redirect_field_name = ""
 
     def form_valid(self, form):
         form.instance.user = self.request.user
