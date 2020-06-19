@@ -75,14 +75,35 @@ resource "aws_security_group_rule" "lb_to_app_ingress" {
   source_security_group_id  = aws_security_group.lb_sg.id
 }
 
-resource "aws_security_group_rule" "app_egress" {
+resource "aws_security_group_rule" "app_db_egress" {
   type                      = "egress"
-  description               = "Output to DB on 5432"
+  description               = "Outbound to DB on 5432"
   from_port                 = 5432
   to_port                   = 5432
   protocol                  = "tcp"
   security_group_id         = aws_security_group.app_sg.id
   source_security_group_id  = aws_security_group.db_sg.id
+}
+
+
+resource "aws_security_group_rule" "app_http_egress" {
+  type                      = "egress"
+  description               = "Outbound to over HTTP"
+  from_port                 = 80
+  to_port                   = 80
+  protocol                  = "tcp"
+  cidr_blocks               = ["0.0.0.0/0"]
+  security_group_id         = aws_security_group.app_sg.id
+}
+
+resource "aws_security_group_rule" "app_https_egress" {
+  type                      = "egress"
+  description               = "Outbound over HTTPS"
+  from_port                 = 443
+  to_port                   = 443
+  protocol                  = "tcp"
+  cidr_blocks               = ["0.0.0.0/0"]
+  security_group_id         = aws_security_group.app_sg.id
 }
 
 resource "aws_security_group_rule" "lb_http_ingress" {
@@ -108,7 +129,7 @@ resource "aws_security_group_rule" "lb_https_ingress" {
 
 resource "aws_security_group_rule" "lb_egress" {
   type                      = "egress"
-  description               = "Output to App on 80"
+  description               = "Outbound to App on 80"
   from_port                 = 80
   to_port                   = 80
   protocol                  = "tcp"

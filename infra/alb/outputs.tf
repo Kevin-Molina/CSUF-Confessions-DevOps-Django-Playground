@@ -3,7 +3,7 @@ output "alb" {
     description = "AWS ALB"
 }
 
-output "target-group-id" {
-    value = aws_lb_target_group.target-group.id
+output "target-group-arn" {
+    value = aws_lb_target_group.target-group.arn
     description = "Target Group ID"
 }
