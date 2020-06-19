@@ -83,6 +83,7 @@ class VoteSubmitView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("confessions")
     success_message = "Vote recorded"
     template_name = "confessions/confessions.html"
+    login_url = "login"
 
     def form_valid(self, form):
         form.instance.user = self.request.user
