@@ -129,6 +129,5 @@ env/
 .gitignore
 static/
 Dockerfile
-requirements.txt
 .dockerignore
 infra/
