@@ -14,6 +14,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import sys
+import requests
 from django.core.management.utils import get_random_secret_key
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -27,7 +28,16 @@ SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 # SECURITY WARNING: don"t run with debug turned on in production!
 DEBUG = True if os.getenv("DEBUG_MODE") == "True" else False
 
-ALLOWED_HOSTS = (os.getenv("ALLOWED_HOSTS"), "*")
+# ALLOWED_HOSTS = [(os.getenv("ALLOWED_HOSTS"), "*")]
+ALLOWED_HOSTS = []
+
+try:
+    EC2_PRIVATE_IP = requests.get(
+        'http://169.254.169.254/latest/meta-data/local-ipv4',
+        timeout=0.5).text
+    ALLOWED_HOSTS.append(EC2_PRIVATE_IP)
+except requests.exceptions.RequestException:
+    pass
 
 
 # Application definition
