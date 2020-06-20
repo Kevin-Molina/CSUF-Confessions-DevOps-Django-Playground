@@ -73,7 +73,7 @@ resource "aws_autoscaling_group" "autoscaling_group" {
   min_size                  = 1
   health_check_grace_period = 300
   health_check_type         = "EC2"
-  desired_capacity          = 1
+  desired_capacity          = 1 # Hey, no SLA for uptime and (an extra) three dollars is three dollars
   force_delete              = false
   placement_group           = aws_placement_group.placement_group.name
   vpc_zone_identifier       = [data.terraform_remote_state.subnet_group.outputs.public_subnet_us_east_1a, 

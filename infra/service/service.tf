@@ -29,7 +29,7 @@ resource "aws_ecs_service" "csuf-confessions" {
   cluster                           = data.terraform_remote_state.cluster.outputs.cluster
   desired_count                     = 1
   health_check_grace_period_seconds = 15
-
+  force_new_deployment              = true
   iam_role      = "arn:aws:iam::569741890825:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS"
 
   # Track the latest ACTIVE revision

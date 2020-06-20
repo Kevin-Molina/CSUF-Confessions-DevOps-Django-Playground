@@ -1,6 +1,6 @@
 [
     {
-      "cpu": 2048,
+      "cpu": 1024,
       "environment": [
         {
         "name": "SECRET_KEY",
@@ -22,7 +22,7 @@
         }
       ],
       "image": "569741890825.dkr.ecr.us-east-1.amazonaws.com/confessions:latest",
-      "memory": 426,
+      "memory": 213,
       "name": "csuf-confessions"
     }
   ]
