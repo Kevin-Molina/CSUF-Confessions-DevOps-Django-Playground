@@ -23,6 +23,6 @@ before_deploy:
 deploy:
   provider: script
   script: 
-    - cd infra && apply-all
+    - cd infra && make apply-all
   on:
     branch: master
