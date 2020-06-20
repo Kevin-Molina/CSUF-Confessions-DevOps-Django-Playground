@@ -1,0 +1,12 @@
+language: python
+python: "3.7"
+os: linux
+dist: xenial
+services: docker
+install: pip install -r requirements.txt
+script: 
+  - set -e
+  - python manage.py test
+  - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${REPOSITORY_URI}
+  - docker build . -t confessions:${TRAVIS_BUILD_NUMBER}
+  - docker push docker push ${REPOSITORY_URI}/confessions:${TRAVIS_BUILD_NUMBER}
