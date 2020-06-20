@@ -1,49 +1,45 @@
-vpc: init-vpc plan-vpc apply-vpc
-init-vpc:
-	cd vpc; terraform init
-plan-vpc:
-	cd vpc; terraform plan
+destroy-all: destroy-service destroy-task destroy-ec2 destroy-cluster \
+destroy-alb destroy-sgs destroy-iam destroy-vpc
+
+apply-all: apply-vpc apply-iam apply-sgs apply-alb apply-cluster \
+apply-ec2 apply-task apply-service
+
 apply-vpc:
-	cd vpc; terraform apply
+	cd vpc && terraform init && terraform apply -auto-approve
 destroy-vpc:
-	cd vpc; terraform destroy
+	cd vpc && terraform init && terraform destroy -auto-approve
 
-iam: init-iam plan-iam apply-iam
-init-iam:
-	cd iam; terraform init
-plan-iam:
-	cd iam; terraform plan
 apply-iam:
-	cd iam; terraform apply
+	cd iam && terraform init && terraform apply -auto-approve
 destroy-iam:
-	cd iam; terraform destroy
+	cd iam && terraform init && terraform destroy -auto-approve
 
-sgs: init-sgs plan-sgs apply-sgs
-init-sgs:
-	cd security-groups; terraform init
-plan-sgs:
-	cd security-groups; terraform plan
 apply-sgs:
-	cd security-groups; terraform apply
+	cd security-groups && terraform init && terraform apply -auto-approve
 destroy-sgs:
-	cd security-groups; terraform destroy
+	cd security-groups && terraform init && terraform destroy -auto-approve
 
-alb: init-alb plan-alb apply-alb
-init-alb:
-	cd alb; terraform init
-plan-alb:
-	cd alb; terraform plan
 apply-alb:
-	cd alb; terraform apply
+	cd alb && terraform init && terraform apply -auto-approve
 destroy-alb:
-	cd alb; terraform destroy
+	cd alb && terraform init && terraform destroy -auto-approve
 
-cluster: init-cluster plan-cluster apply-cluster
-init-cluster:
-	cd cluster; terraform init
-plan-cluster:
-	cd cluster; terraform plan
 apply-cluster:
-	cd cluster; terraform apply
+	cd cluster && terraform init && terraform apply -auto-approve
 destroy-cluster:
-	cd cluster; terraform destroy
+	cd cluster && terraform init && terraform destroy -auto-approve
+
+apply-ec2:
+	cd ec2 && terraform init && terraform apply -auto-approve
+destroy-ec2:
+	cd ec2 && terraform init && terraform destroy -auto-approve
+
+apply-task:
+	cd task-definition && terraform init && terraform apply -auto-approve
+destroy-task:
+	cd task-definition && terraform init && terraform destroy -auto-approve
+
+apply-service:
+	cd service && terraform init && terraform apply -auto-approve
+destroy-service:
+	cd service && terraform init && terraform destroy -auto-approve
