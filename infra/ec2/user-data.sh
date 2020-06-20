@@ -33,6 +33,7 @@ ECS_LOGFILE=/log/ecs-agent.log
 ECS_AVAILABLE_LOGGING_DRIVERS=["json-file","awslogs", "fluentd"]
 ECS_LOGLEVEL=info
 ECS_CLUSTER=${CLUSTER_NAME}
+ECS_IMAGE_PULL_BEHAVIOR=always
 ECS_RESERVED_MEMORY=32" >> /etc/ecs/ecs.config
 
 docker run --name ecs-agent \
