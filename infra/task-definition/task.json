@@ -21,7 +21,7 @@
         "containerPort": 80
         }
       ],
-      "image": "${var.REPOSITORY_URI}/confessions:${var.IMAGE_VERSION}",
+      "image": "${REPOSITORY_URI}/confessions:${IMAGE_VERSION}",
       "memory": 213,
       "name": "csuf-confessions"
     }
