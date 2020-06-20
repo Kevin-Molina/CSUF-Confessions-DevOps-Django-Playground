@@ -11,6 +11,7 @@ install:
 script: 
   - set -e
   - python manage.py test
+  - python manage.py collectstatic
   - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${REPOSITORY_URI}
   - docker build . -t ${REPOSITORY_URI}/confessions:${TRAVIS_BUILD_NUMBER}
   - docker push ${REPOSITORY_URI}/confessions:${TRAVIS_BUILD_NUMBER}

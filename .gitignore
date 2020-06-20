@@ -125,6 +125,6 @@ dmypy.json
 .terraform*
 !.gitignore
 terraform.tfstate
-collected_static_files/*
+collected_static_files/
 
 env/
