@@ -14,7 +14,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import sys
-
+from django.core.management.utils import get_random_secret_key
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -22,14 +22,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "Tests" if os.environ.get("TESTS") == "True" else os.environ["SECRET_KEY"]
+SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don"t run with debug turned on in production!
-DEBUG = os.environ.get("TESTS") == "True" or os.environ["DEBUG_MODE"] == "True"
+DEBUG = True if os.getenv("DEBUG_MODE") == "True" else False
 
-ALLOWED_HOSTS = (
-    "*" if os.environ.get("TESTS") == "True" else os.environ["ALLOWED_HOSTS"]
-)
+ALLOWED_HOSTS = (os.getenv("ALLOWED_HOSTS"))
 
 
 # Application definition
