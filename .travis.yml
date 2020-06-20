@@ -6,7 +6,7 @@ services: docker
 install: 
   - pip install -r requirements.txt
   - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
-  - unzip /tmp/awscliv2.zip -d /tmp/
+  - unzip -q /tmp/awscliv2.zip -d /tmp/
   - sudo sh /tmp/aws/install
 script: 
   - set -e
@@ -16,7 +16,7 @@ script:
   - docker push ${REPOSITORY_URI}/confessions:${TRAVIS_BUILD_NUMBER}
 before_deploy:
   - wget https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip -O /tmp/terraform.zip
-  - sudo unzip /tmp/terraform.zip -d /usr/local/bin
+  - sudo unzip -q /tmp/terraform.zip -d /usr/local/bin
   - export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugin-cache"
   - export TF_VAR_IMAGE_VERSION=${TRAVIS_BUILD_NUMBER}
   - export TF_VAR_REPOSITORY_URI=${REPOSITORY_URI}
@@ -24,4 +24,5 @@ deploy:
   provider: script
   script: 
     - cd infra && apply-all
-  on branch: master
+  on:
+    branch: master
