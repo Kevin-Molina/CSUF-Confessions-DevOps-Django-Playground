@@ -21,7 +21,7 @@
         "containerPort": 80
         }
       ],
-      "image": "569741890825.dkr.ecr.us-east-1.amazonaws.com/confessions:latest",
+      "image": "${var.REPOSITORY_URI}/confessions:${var.IMAGE_VERSION}",
       "memory": 213,
       "name": "csuf-confessions"
     }
