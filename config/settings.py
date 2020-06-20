@@ -29,15 +29,16 @@ SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 DEBUG = True if os.getenv("DEBUG_MODE") == "True" else False
 
 # ALLOWED_HOSTS = [(os.getenv("ALLOWED_HOSTS"), "*")]
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
-try:
-    EC2_PRIVATE_IP = requests.get(
-        'http://169.254.169.254/latest/meta-data/local-ipv4',
-        timeout=0.5).text
-    ALLOWED_HOSTS.append(EC2_PRIVATE_IP)
-except requests.exceptions.RequestException:
-    pass
+if not DEBUG:
+    try:
+        EC2_PRIVATE_IP = requests.get(
+            'http://169.254.169.254/latest/meta-data/local-ipv4',
+            timeout=0.5).text
+        ALLOWED_HOSTS.append(EC2_PRIVATE_IP)
+    except requests.exceptions.RequestException:
+        pass
 
 
 # Application definition
