@@ -21,4 +21,7 @@ before_deploy:
   - export TF_VAR_IMAGE_VERSION=${TRAVIS_BUILD_NUMBER}
   - export TF_VAR_REPOSITORY_URI=${REPOSITORY_URI}
 deploy:
-  - cd infra && apply-all
+  provider: script
+  script: 
+    - cd infra && apply-all
+  on branch: master
