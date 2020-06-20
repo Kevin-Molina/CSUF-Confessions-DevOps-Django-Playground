@@ -21,6 +21,7 @@ data "terraform_remote_state" "security_group" {
   }
 }
 
+variable "DB_USERNAME" {}
 variable "DB_PASSWORD" {}
 
 resource "aws_db_subnet_group" "db_subnet_group" {
@@ -45,8 +46,8 @@ resource "aws_db_instance" "db_instance" {
   vpc_security_group_ids  = [data.terraform_remote_state.security_group.outputs.db_sg_id]
   name                    = "confessions"
   identifier              = "confession-db"
-  multi_az                = false
-  username                = "master"
+  multi_az                = false # Baller on a budget, yo
+  username                = var.DB_USERNAME
   password                = var.DB_PASSWORD
-  backup_retention_period = 7
+  backup_retention_period = 7 # See above comment
 }
