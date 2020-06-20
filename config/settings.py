@@ -98,7 +98,7 @@ DATABASES = {
 }
 
 # Nothing more permanent than a temporary fix
-if "test" in sys.argv or os.environ.get("TESTS") == "True" or DEBUG:
+if os.environ.get("TESTS") == "True" or DEBUG:
     DATABASES["default"]["ENGINE"] = "django.db.backends.sqlite3"
     DATABASES["default"]["NAME"]: os.path.join(BASE_DIR, "db.sqlite3")
 else:
