@@ -14,6 +14,8 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import sys
+
+import json
 import requests
 from django.core.management.utils import get_random_secret_key
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,14 +24,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
-
-# SECURITY WARNING: don"t run with debug turned on in production!
-DEBUG = True if os.getenv("DEBUG_MODE") == "True" else False
-
-# ALLOWED_HOSTS = [(os.getenv("ALLOWED_HOSTS"), "*")]
+DEBUG = os.getenv("DEBUG_MODE") == "True"
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+
+# Expects JSON list of allowed hosts
+env_allowed_hosts_json = os.getenv('ALLOWED_HOSTS')
+if env_allowed_hosts:
+    additional_hosts = json.loads(env_allowed_hosts_json)
+    # Requires a list type be provided
+    ALLOWED_HOSTS.extend(additional_hosts)
+
 
 if not DEBUG:
     try:
@@ -90,15 +95,20 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ['DB_NAME'],
+        'USER': os.environ['DB_USER'],
+        'PASSWORD': os.environ['DB_PASSWORD],
+        'HOST': os.environ['DB_HOST'],
+        'PORT': os.environ['DB_PORT'],
     }
 }
 
 
-if "test" in sys.argv or os.environ.get("TESTS") == "True":
+if "test" in sys.argv or os.environ.get("TESTS") == "True" or DEBUG:
     DATABASES["default"]["ENGINE"] = "django.db.backends.sqlite3"
+    DATABASES["default"]["NAME"]: os.path.join(BASE_DIR, "db.sqlite3")
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
