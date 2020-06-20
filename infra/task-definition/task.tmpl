@@ -1,20 +1,37 @@
 [
     {
       "cpu": 1024,
-      "environment": [
+      "secrets": [
+        {
+        "name": "DB_NAME",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:569741890825:secret:CONFESSION_DB_CRED-wHIDNM:dbname::"
+        },
+        {
+        "name": "DB_USER",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:569741890825:secret:CONFESSION_DB_CRED-wHIDNM:username::"
+        },
+        {
+        "name": "DB_PASSWORD",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:569741890825:secret:CONFESSION_DB_CRED-wHIDNM:password::"
+        },
+        {
+        "name": "DB_HOST",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:569741890825:secret:CONFESSION_DB_CRED-wHIDNM:host::"
+        },
+        {
+        "name": "DB_PORT",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:569741890825:secret:CONFESSION_DB_CRED-wHIDNM:port::"
+        },
         {
         "name": "SECRET_KEY",
-        "value": "SECRET_KEY"
-        },
-        {
-        "name": "DEBUG_MODE",
-        "value": "False"
-        },
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:569741890825:secret:CSUF_CONFESSIONS_SECRET_KEY-iokmUA"
+        }
+      ],
+      "environment": [
         {
         "name": "ALLOWED_HOSTS",
         "value": "['*']"
         }
-  
       ],
       "portMappings": [
         {
