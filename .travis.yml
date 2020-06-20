@@ -13,7 +13,7 @@ script:
   - python manage.py test
   - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${REPOSITORY_URI}
   - docker build . -t confessions:${TRAVIS_BUILD_NUMBER}
-  - docker push docker push ${REPOSITORY_URI}/confessions:${TRAVIS_BUILD_NUMBER}
+  - docker push ${REPOSITORY_URI}/confessions:${TRAVIS_BUILD_NUMBER}
 before_deploy:
   - wget https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip -O /tmp/terraform.zip
   - sudo unzip /tmp/terraform.zip -d /usr/local/bin
