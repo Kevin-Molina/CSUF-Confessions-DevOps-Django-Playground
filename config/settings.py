@@ -100,7 +100,7 @@ DATABASES = {
 # Nothing more permanent than a temporary fix
 if os.environ.get("TESTS") == "True" or DEBUG:
     DATABASES["default"]["ENGINE"] = "django.db.backends.sqlite3"
-    DATABASES["default"]["NAME"]: os.path.join(BASE_DIR, "db.sqlite3")
+    DATABASES["default"]["NAME"] = os.path.join(BASE_DIR, "db.sqlite3")
 else:
     DATABASES = {
         'default': {
@@ -125,6 +125,34 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        }
+    },
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose"
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "propagate": False,
+        },
+    },
+}
+
+
+
 
 
 # Internationalization
