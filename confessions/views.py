@@ -135,6 +135,8 @@ class CommentSubmitView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Comment
     form_class = CommentForm
     success_message = "Comment Submitted"
+    login_url = "login"
+    redirect_field_name = ""
 
     def get_success_url(self):
         return reverse("view_confession", kwargs={"pk": self.kwargs["pk"]})
