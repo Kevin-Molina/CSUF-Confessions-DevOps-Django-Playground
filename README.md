@@ -3,8 +3,6 @@
 
 ## About
 
-Live at - https://csufconfessions.com
-
 Fundamentally, this is a Django project called CSUF Confessions where users can anonamously write confessions, upvote/downvote, and comment. 
 
 ![Website Screenshot](readme_shot.png)
